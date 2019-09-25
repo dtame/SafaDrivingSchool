@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SafaEngine
+namespace SafaEngine.Core
 {
     public class Phase
     {

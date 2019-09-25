@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using static SafaEngine.Ennumarations;
 
-namespace SafaEngine
+namespace SafaEngine.Core
 {
     public class StandardProgram : DrivingProgram
     {

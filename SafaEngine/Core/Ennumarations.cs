@@ -1,11 +1,10 @@
-﻿namespace SafaEngine
+﻿namespace SafaEngine.Core
 {
     public class Ennumarations
     {
         public enum CourseState
         {
-            UNDEFINIED
-           ,PLANNED
+           PLANNED
            ,CONFIRMED
            ,NOTCONFIRMED
            ,MISSED
@@ -22,6 +21,13 @@
         {
             STANDARD
            ,CUSTOM
+        }
+
+        public enum UserRole
+        {
+            STUDENT
+            ,INSTRUCTOR
+            ,ADMIN
         }
     }
 }
