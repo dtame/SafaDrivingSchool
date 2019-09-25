@@ -1,4 +1,4 @@
-﻿using static SafaEngine.Ennumarations;
+﻿using static SafaEngine.Core.Ennumarations;
 
 namespace SafaEngine.Core
 {
