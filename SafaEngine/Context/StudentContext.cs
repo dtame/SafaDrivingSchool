@@ -11,8 +11,7 @@ namespace SafaEngine.Context
         {
             Role = UserRole.STUDENT;
         }
-        public DateTime RegistrationDate { get; set; }
-        public UserProfile Profile { get; set; }
+        public DateTime RegistrationDate { get; set; }        
 
         public DrivingProgram Program { get; set; }
 
