@@ -2,10 +2,11 @@
 
 namespace SafaEngine.Core
 {
-    public abstract class DrivingProgram
+    public class DrivingProgram
     {
-        protected string Name { get; set; }
-        public List<Phase> Phases { get; set; } 
-        protected double Price { get; set; } 
+        public int ID { get; set; }
+        public string Name { get; set; }        
+        public decimal Price { get; set; }
+        public virtual List<Phase> Phases { get; set; }
     }
 }

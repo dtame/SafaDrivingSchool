@@ -35,3 +35,9 @@ body {
         display: none;
     }
 }
+
+.HomeBackground {
+    background-image: url(../images/indexBackup.jpg);
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}

@@ -5,23 +5,34 @@ using static SafaEngine.Core.Ennumarations;
 
 namespace SafaEngine.Core
 {
-    public class PaiementProfile
+    public class PaiementPlanner
     {
         public List<Paiement> Paiements { get; set; }
         private int StudentID { get; set; }
         private DateTime StartDate { get; set; }
         private ProgramType ProgramType { get; set; }
 
-        public PaiementProfile(int studentID, DateTime startDate, ProgramType programType)
+        public PaiementPlanner(int studentID, DateTime startDate, ProgramType programType)
         {
             Paiements = new List<Paiement>();
             StudentID = studentID;
             StartDate = startDate;
             ProgramType = programType;
 
-            //TODO : load all paiements from db for this student
-        }
+            //set paiement plan
+            switch (programType)
+            {
+                case ProgramType.CUSTOM:
+                    Paiements.Add(new Paiement {
+                        
+                    });
+                    break;
 
+                case ProgramType.STANDARD:
+                    break;
+            }            
+        }
+        
         /// <summary>
         /// Add a panelty fee when a student miss a class
         /// </summary>

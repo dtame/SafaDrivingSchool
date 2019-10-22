@@ -6,11 +6,10 @@ namespace SafaEngine.Calendar
     /// Planning / Calender of a user 
     /// </summary>
     public class CourseSchedule
-    {
-        List<EventSchedule> Events = new List<EventSchedule>(); 
-        public CourseSchedule(int userID)
-        {
-            //TODO : Load events from bd
-        }
+    {        
+        public int CourseScheduleID { get; set; }
+        public int StudentID { get; set;  }
+        public bool HasLearnersLicence { get; set; }
+        
     }
 }

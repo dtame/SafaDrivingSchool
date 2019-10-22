@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,9 @@ namespace SafaDriving.Web.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "Program")]
+        public int ProgramID { get; set; }
         [Required]        
         [Display(Name = "First name")]
         public string FirstName { get; set; }
@@ -35,5 +39,8 @@ namespace SafaDriving.Web.Models.AccountViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    
+        
+        public List<SelectListItem> ProgramListItems { get; set; }
     }
 }

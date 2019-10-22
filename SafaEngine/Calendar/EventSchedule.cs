@@ -5,11 +5,12 @@ namespace SafaEngine.Calendar
     /// <summary>
     /// Object to manipulate in calendar. 
     /// </summary>
-    public abstract class EventSchedule
+    public class EventSchedule
     {
         public int ID { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime EventDate { get; set; }
         public string Description { get; set; }
         public bool CanBeModifyByOthers { get; set; } = false;
+        public int CourseScheduleID { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SafaDriving.Web.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,11 +43,44 @@ namespace SafaDriving.Web.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true)
+                    Address = table.Column<string>(nullable: true),
+                    ProgramID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DrivingPrograms",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Price = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DrivingPrograms", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Paiements",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    StudentID = table.Column<int>(nullable: false),
+                    DueDate = table.Column<DateTime>(nullable: false),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    Amount = table.Column<double>(nullable: false),
+                    PaiementDone = table.Column<bool>(nullable: false),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Paiements", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +189,49 @@ namespace SafaDriving.Web.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Phases",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    DrivingProgramID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Phases", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Phases_DrivingPrograms_DrivingProgramID",
+                        column: x => x.DrivingProgramID,
+                        principalTable: "DrivingPrograms",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Courses",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    SeqNumber = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false),
+                    PhaseID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Courses", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Courses_Phases_PhaseID",
+                        column: x => x.PhaseID,
+                        principalTable: "Phases",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +270,16 @@ namespace SafaDriving.Web.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_PhaseID",
+                table: "Courses",
+                column: "PhaseID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Phases_DrivingProgramID",
+                table: "Phases",
+                column: "DrivingProgramID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -214,10 +300,22 @@ namespace SafaDriving.Web.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Paiements");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Phases");
+
+            migrationBuilder.DropTable(
+                name: "DrivingPrograms");
         }
     }
 }

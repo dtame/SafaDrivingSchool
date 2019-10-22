@@ -20,9 +20,7 @@ namespace SafaEngine.Calendar
             List<EventSchedule> events = new List<EventSchedule>();
             //TODO : get from the db all events create by and assign to this student + all the hollidays(editable)
             return events;
-        }
-
-        
+        }        
 
         public bool SetCourseState(int course, int studentId, CourseState newStateOfCourse)
         {
@@ -36,7 +34,7 @@ namespace SafaEngine.Calendar
             courseEvent.AssignToId = assignToId;
             courseEvent.Date = dateEvent;
             courseEvent.Description = description;
-            courseEvent.Status = CourseState.PLANNED;
+            courseEvent.Status = (int)CourseState.PLANNED;
 
             //TODO : save to db
         }

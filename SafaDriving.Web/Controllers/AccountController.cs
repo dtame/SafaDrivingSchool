@@ -7,8 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SafaDriving.Web.Data;
+using SafaDriving.Web.Helpers;
 using SafaDriving.Web.Models;
 using SafaDriving.Web.Models.AccountViewModels;
+using SafaEngine.Calendar;
+using SafaEngine.Core;
+using static SafaEngine.Core.Ennumarations;
 
 namespace SafaDriving.Web.Controllers
 {
@@ -17,20 +22,24 @@ namespace SafaDriving.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger _logger;
+        private IUnitOfWork dal;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            dal = unitOfWork;
         }        
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+            RegisterViewModel model = new RegisterViewModel();
+            model.ProgramListItems = dal.DrivingPrograms.Get().ToListItems();
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -45,17 +54,98 @@ namespace SafaDriving.Web.Controllers
                                                 , Email = model.Email
                                                 , Address = model.Address
                                                 , FirstName = model.FirstName
-                                                , LastName = model.LastName};
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
+                                                , LastName = model.LastName
+                                                
+                };
+                var resultRole = await _userManager.AddToRoleAsync(user, ((int)UserRole.Student).ToString());
+                if (resultRole.Succeeded) {
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created a new account with password.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation("User created a new account with password.");
+
+                        DrivingProgram program = dal.DrivingPrograms.GetByID(model.ProgramID);
+
+                        //add schedule 
+                        dal.CourseSchedules.Insert(new SafaEngine.Calendar.CourseSchedule
+                        {
+                            HasLearnersLicence = false,
+                            StudentID = Int32.Parse(user.Id)
+                        }); ;
+                        //int scheduleId = dal.CourseSchedules.Get(x => x.StudentID == Int32.Parse(user.Id)).First().CourseScheduleID;
+
+                        //add course events
+                        List<Phase> Phases = dal.Phases.Get().ToList();
+                        foreach (Phase item in Phases)
+                        {
+                            List<Course> Courses = dal.Courses.Get(x => x.PhaseId == item.ID).ToList();
+                            foreach(Course course in Courses)
+                            {
+                                CourseEvent courseEvent = new CourseEvent
+                                {
+                                    CourseID = course.ID,
+                                    StudentID = Int32.Parse(user.Id),
+                                    Description = course.Title,
+                                    Status = (int)CourseState.UNDEFINIED,
+                                    CanBeModifyByOthers = true,
+                                };
+                                dal.CourseEvents.Insert(courseEvent);                                
+                            }
+                        }
+
+                        //add paiement plan
+                        if(model.ProgramID == (int)ProgramType.STANDARD)
+                        {                            
+                            dal.Paiements.Insert(
+                                new SafaEngine.Core.Paiement {
+                                StudentID = Int32.Parse(user.Id),
+                                Description = "Initial paiement",
+                                DueDate = DateTime.Now,
+                                PaiementDone = false,
+                                ID = 0,
+                                Amount = program.Price    
+                            }
+                            );
+
+                            dal.Paiements.Insert(
+                                new SafaEngine.Core.Paiement
+                                {
+                                    StudentID = Int32.Parse(user.Id),
+                                    Description = "Second paiement",
+                                    DueDate = DateTime.Now,
+                                    PaiementDone = false,
+                                    ID = 0,
+                                    Amount = program.Price
+                                }
+                                );
+                        }
+                        else {                            
+                            dal.Paiements.Insert(
+                                new SafaEngine.Core.Paiement
+                                {
+                                    StudentID = Int32.Parse(user.Id),
+                                    Description = "Total paiement",
+                                    DueDate = DateTime.Now,
+                                    PaiementDone = false,
+                                    ID = 0,
+                                    Amount = program.Price
+                                }
+                            );
+
+                        }
+
+                        dal.Save();
+
+                        return RedirectToAction("Dashboard", "Student", new { email = user.Email} , null);
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                else {
+                    AddErrors(resultRole);
+                }                
             }
 
             // If we got this far, something failed, redisplay form

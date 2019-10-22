@@ -6,9 +6,12 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
-            <h4>Create a new account.</h4>
+            <h4>New student account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+
+            </div>            
             <div class="form-group">
                 <label asp-for="FirstName"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -28,6 +31,11 @@
                 <label asp-for="Email"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProgramID"></label>
+                <select asp-for="ProgramID" asp-items="Model.ProgramListItems" class="form-control"></select>
+                <span asp-validation-for="ProgramID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Password"></label>

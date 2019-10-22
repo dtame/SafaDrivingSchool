@@ -10,8 +10,8 @@ using SafaDriving.Web.Data;
 namespace SafaDriving.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190926135216_Initial")]
-    partial class Initial
+    [Migration("20191015160404_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,6 +168,8 @@ namespace SafaDriving.Web.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<int>("ProgramID");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -186,6 +188,84 @@ namespace SafaDriving.Web.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.Course", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("PhaseID");
+
+                    b.Property<int>("SeqNumber");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PhaseID");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.DrivingProgram", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("DrivingPrograms");
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.Paiement", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Amount");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("DueDate");
+
+                    b.Property<bool>("PaiementDone");
+
+                    b.Property<int>("StudentID");
+
+                    b.Property<DateTime>("TimeStamp");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Paiements");
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.Phase", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<int?>("DrivingProgramID");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DrivingProgramID");
+
+                    b.ToTable("Phases");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -231,6 +311,20 @@ namespace SafaDriving.Web.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.Course", b =>
+                {
+                    b.HasOne("SafaEngine.Core.Phase")
+                        .WithMany("Courses")
+                        .HasForeignKey("PhaseID");
+                });
+
+            modelBuilder.Entity("SafaEngine.Core.Phase", b =>
+                {
+                    b.HasOne("SafaEngine.Core.DrivingProgram")
+                        .WithMany("Phases")
+                        .HasForeignKey("DrivingProgramID");
                 });
 #pragma warning restore 612, 618
         }

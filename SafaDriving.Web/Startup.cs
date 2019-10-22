@@ -37,11 +37,13 @@ namespace SafaDriving.Web
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                     options.UseSqlServer(Configuration.GetConnectionString("ProductionConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
+            
+            services.AddScoped<IUnitOfWork, ApplicationDAL>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

@@ -4,11 +4,12 @@
     {
         public enum CourseState
         {
-           PLANNED
-           ,CONFIRMED
-           ,NOTCONFIRMED
-           ,MISSED
-           ,DONE
+           PLANNED = 1
+           ,CONFIRMED = 2
+           ,NOTCONFIRMED = 3
+           ,MISSED = 5
+           ,DONE = 4
+           ,UNDEFINIED = 0
         }
 
         public enum CourseType
@@ -19,8 +20,8 @@
 
         public enum ProgramType
         {
-            STANDARD
-           ,CUSTOM
+            STANDARD = 1
+           ,CUSTOM = 2
         }
 
         public enum UserRole
