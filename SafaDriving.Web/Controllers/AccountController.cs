@@ -11,9 +11,6 @@ using SafaDriving.Web.Data;
 using SafaDriving.Web.Helpers;
 using SafaDriving.Web.Models;
 using SafaDriving.Web.Models.AccountViewModels;
-using SafaEngine.Calendar;
-using SafaEngine.Core;
-using static SafaEngine.Core.Ennumarations;
 
 namespace SafaDriving.Web.Controllers
 {
@@ -55,9 +52,10 @@ namespace SafaDriving.Web.Controllers
                                                 , Address = model.Address
                                                 , FirstName = model.FirstName
                                                 , LastName = model.LastName
+                                                , SecurityStamp = Guid.NewGuid().ToString()
                                                 
                 };
-                var resultRole = await _userManager.AddToRoleAsync(user, ((int)UserRole.Student).ToString());
+                var resultRole = await _userManager.AddToRoleAsync(user, "Student");
                 if (resultRole.Succeeded) {
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -67,79 +65,81 @@ namespace SafaDriving.Web.Controllers
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created a new account with password.");
 
-                        DrivingProgram program = dal.DrivingPrograms.GetByID(model.ProgramID);
+                        //DrivingProgram program = dal.DrivingPrograms.Get(x => x.ID == model.ProgramID, null, "Phase, Course").First();
 
-                        //add schedule 
-                        dal.CourseSchedules.Insert(new SafaEngine.Calendar.CourseSchedule
-                        {
-                            HasLearnersLicence = false,
-                            StudentID = Int32.Parse(user.Id)
-                        }); ;
-                        //int scheduleId = dal.CourseSchedules.Get(x => x.StudentID == Int32.Parse(user.Id)).First().CourseScheduleID;
 
-                        //add course events
-                        List<Phase> Phases = dal.Phases.Get().ToList();
-                        foreach (Phase item in Phases)
-                        {
-                            List<Course> Courses = dal.Courses.Get(x => x.PhaseId == item.ID).ToList();
-                            foreach(Course course in Courses)
-                            {
-                                CourseEvent courseEvent = new CourseEvent
-                                {
-                                    CourseID = course.ID,
-                                    StudentID = Int32.Parse(user.Id),
-                                    Description = course.Title,
-                                    Status = (int)CourseState.UNDEFINIED,
-                                    CanBeModifyByOthers = true,
-                                };
-                                dal.CourseEvents.Insert(courseEvent);                                
-                            }
-                        }
 
-                        //add paiement plan
-                        if(model.ProgramID == (int)ProgramType.STANDARD)
-                        {                            
-                            dal.Paiements.Insert(
-                                new SafaEngine.Core.Paiement {
-                                StudentID = Int32.Parse(user.Id),
-                                Description = "Initial paiement",
-                                DueDate = DateTime.Now,
-                                PaiementDone = false,
-                                ID = 0,
-                                Amount = program.Price    
-                            }
-                            );
+                        ////add schedule 
+                        //dal.CourseSchedules.Insert(new SafaEngine.Calendar.CourseSchedule
+                        //{
+                        //    HasLearnersLicence = false,
+                        //    StudentID = Int32.Parse(user.Id)
+                        //}); ;
+                        ////int scheduleId = dal.CourseSchedules.Get(x => x.StudentID == Int32.Parse(user.Id)).First().CourseScheduleID;
 
-                            dal.Paiements.Insert(
-                                new SafaEngine.Core.Paiement
-                                {
-                                    StudentID = Int32.Parse(user.Id),
-                                    Description = "Second paiement",
-                                    DueDate = DateTime.Now,
-                                    PaiementDone = false,
-                                    ID = 0,
-                                    Amount = program.Price
-                                }
-                                );
-                        }
-                        else {                            
-                            dal.Paiements.Insert(
-                                new SafaEngine.Core.Paiement
-                                {
-                                    StudentID = Int32.Parse(user.Id),
-                                    Description = "Total paiement",
-                                    DueDate = DateTime.Now,
-                                    PaiementDone = false,
-                                    ID = 0,
-                                    Amount = program.Price
-                                }
-                            );
+                        ////add course events
+                        //List<Phase> Phases = dal.Phases.Get().ToList();
+                        //foreach (Phase item in Phases)
+                        //{
+                        //    List<Course> Courses = dal.Courses.Get(x => x.PhaseId == item.ID).ToList();
+                        //    foreach(Course course in Courses)
+                        //    {
+                        //        CourseEvent courseEvent = new CourseEvent
+                        //        {
+                        //            CourseID = course.ID,
+                        //            StudentID = Int32.Parse(user.Id),
+                        //            Description = course.Title,
+                        //            Status = (int)CourseState.UNDEFINIED,
+                        //            CanBeModifyByOthers = true,
+                        //        };
+                        //        dal.CourseEvents.Insert(courseEvent);                                
+                        //    }
+                        //}
 
-                        }
+                        ////add paiement plan
+                        //if(model.ProgramID == (int)ProgramType.STANDARD)
+                        //{                            
+                        //    dal.Paiements.Insert(
+                        //        new SafaEngine.Core.Paiement {
+                        //        StudentID = Int32.Parse(user.Id),
+                        //        Description = "Initial paiement",
+                        //        DueDate = DateTime.Now,
+                        //        PaiementDone = false,
+                        //        ID = 0,
+                        //        Amount = program.Price    
+                        //    }
+                        //    );
 
-                        dal.Save();
+                        //    dal.Paiements.Insert(
+                        //        new SafaEngine.Core.Paiement
+                        //        {
+                        //            StudentID = Int32.Parse(user.Id),
+                        //            Description = "Second paiement",
+                        //            DueDate = DateTime.Now,
+                        //            PaiementDone = false,
+                        //            ID = 0,
+                        //            Amount = program.Price
+                        //        }
+                        //        );
+                        //}
+                        //else {                            
+                        //    dal.Paiements.Insert(
+                        //        new SafaEngine.Core.Paiement
+                        //        {
+                        //            StudentID = Int32.Parse(user.Id),
+                        //            Description = "Total paiement",
+                        //            DueDate = DateTime.Now,
+                        //            PaiementDone = false,
+                        //            ID = 0,
+                        //            Amount = program.Price
+                        //        }
+                        //    );
 
-                        return RedirectToAction("Dashboard", "Student", new { email = user.Email} , null);
+                        //}
+
+                        //dal.Save();
+
+                        return RedirectToAction("Dashboard", "Student" , null);
                     }
                     AddErrors(result);
                 }

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SafaDriving.Core;
 using SafaDriving.Web.Models;
-using SafaEngine.Calendar;
-using SafaEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +10,7 @@ using System.Threading.Tasks;
 namespace SafaDriving.Web.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-    {
-        //public ApplicationDbContext(string connecti)
-        //{
-
-        //}
-        
+    {                
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

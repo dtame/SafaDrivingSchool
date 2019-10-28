@@ -1,12 +1,11 @@
-﻿using static SafaEngine.Core.Ennumarations;
-
-namespace SafaEngine.Context
+﻿
+namespace SafaDriving.Web.Engine.Context
 {
     public class AdminContext : BaseContext
     {
         public AdminContext()
         {
-            Role = UserRole.ADMIN;
+            Role = UserRole.Admin;
         }        
     }
 }

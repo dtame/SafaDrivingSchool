@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using static SafaEngine.Core.Ennumarations;
 
-namespace SafaEngine.Calendar
+namespace SafaDriving.Core
 {
     public class CourseScheduler
     {

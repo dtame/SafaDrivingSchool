@@ -1,6 +1,5 @@
-﻿using static SafaEngine.Core.Ennumarations;
-
-namespace SafaEngine.Core
+﻿
+namespace SafaDriving.Core
 {
     public class Course
     {

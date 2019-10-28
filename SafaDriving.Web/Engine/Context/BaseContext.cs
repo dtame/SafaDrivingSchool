@@ -1,14 +1,13 @@
-﻿using SafaEngine.Core;
+﻿using SafaDriving.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static SafaEngine.Core.Ennumarations;
 
-namespace SafaEngine.Context
+namespace SafaDriving.Web.Engine.Context
 {
     public abstract class BaseContext
     {
         public UserRole Role { get; set; }
-        public UserProfile Profile { get; set; }
+        public ApplicationUser Profile { get; set; }
     }
 }

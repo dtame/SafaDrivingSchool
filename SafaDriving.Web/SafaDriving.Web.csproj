@@ -16,9 +16,9 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SafaEngine\SafaEngine.csproj" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\StudentViewModels\" />
+    <ProjectReference Include="..\SafaDriving.Core\SafaDriving.Core.csproj" />
   </ItemGroup>
 </Project>
